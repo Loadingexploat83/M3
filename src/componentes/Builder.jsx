@@ -18,7 +18,7 @@ const ATTRIBUTES = [
 
 export default function Builder({build, setBuild, onDesequipar}) {
     /* calculamos las estadisticas acumuladas en cada render */
-    const resumen = resumirEqupamiento(build.equipamiento);
+    const resumen = resumirEquipamiento(build.equipamiento);
     const requisitos = comprobarRequisitos(build.equipamiento.arma, build.atributos);
 
     /* manejador para cambiar atributos numericos */
@@ -37,7 +37,7 @@ export default function Builder({build, setBuild, onDesequipar}) {
     };
 
     return (
-        <aside classNme="builder-column">
+        <aside className="builder-column">
             {/* panel de config y equipamiento */}
             <section className = "panel">
                 <div className="section-heading">
@@ -70,7 +70,7 @@ export default function Builder({build, setBuild, onDesequipar}) {
                                 <div className="slot-info">
                                     <span className="slot-label"> {label}</span>
                                     {/* si hay un item, muestra su nombre, sino, muestra "vacio" */}
-                                    <strong> {iten ? item.nombre : "Vacío"}</strong>
+                                    <strong> {item ? item.nombre : "Vacío"}</strong>
                                     {item && <small> Peso: {item.peso ?? 0}</small>}
                                 </div>
 
@@ -93,16 +93,21 @@ export default function Builder({build, setBuild, onDesequipar}) {
                 <div className="stats-summary">
                     <div className="stat-tile">
                         <span>Peso equipado</span>
+                        <strong>{resumen.peso.toFixed(1)}</strong>
+                        <strong>{resumen.piezas} / 5</strong>
+                    </div>
+                    <div className="stat-tile">
+                        <span>Piezas equipadas</span>
                         <strong>{resumen.piezas} / 5</strong>
                     </div>
                 </div>
 
                 {/* Menu desplegable para mostrar defensas acumuladas */}
-                <details className="details.panel">
+                <details className="details-panel">
                     <summary>Defensa y resistencias del conjunto</summary>
                     <div className="combined-stats">
                         <GroupStats titulo = "Negación de daño" stats={resumen.negacionDanio}/>
-                        <GroupStats titulo="Resistencias" stats={resumen.resistencias}/>
+                        <GroupStats titulo="Resistencias" stats={resumen.resistencia}/>
                     </div>
                 </details>
             </section>
@@ -117,7 +122,7 @@ export default function Builder({build, setBuild, onDesequipar}) {
                 </div>
             
             {/* Generacion dinamica de los 5 inputs de atributos */}
-            <div className="attributes-grid">
+            <div className="attribute-grid">
                 {ATTRIBUTES.map(([key, label]) => (
                     <label key={key} className="field attribute-field">
                         <span>{label}</span>
@@ -150,7 +155,7 @@ export default function Builder({build, setBuild, onDesequipar}) {
 
 // Sub-componente dinámico para pintar la lista de estadísticas (clave -> valor)
 function GroupStats({ titulo, stats }) {
-  const entries = Object.entries(stats);
+  const entries = Object.entries(stats || {});
 
   return (
     <div className="combined-group">

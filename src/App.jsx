@@ -16,7 +16,7 @@ function App() {
 
   /* ou shii soy yo */
   /* control de carga y errores */
-  const [loading, setLoading] = useEffect(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   /* La build del usuario */
@@ -66,8 +66,8 @@ function App() {
       const cat = (item.categoria || '').toLowerCase();
       let slot = 'chest'; // por defecto es el pecho
       if (cat.includes('head') || cat.includes('helm')) slot = 'head';
-      else if (cat.includes('leg') || cat.inlcudes ('pants')) slot = 'legs';
-      else if (cat.includes('gauntley') || cat.includes('glove')) slot = 'arms';
+      else if (cat.includes('leg') || cat.includes ('pants')) slot = 'legs';
+      else if (cat.includes('gauntlet') || cat.includes('glove')) slot = 'arms';
 
       return {
         ...prev, equipamiento: {...prev.equipamiento, [slot]: item}
