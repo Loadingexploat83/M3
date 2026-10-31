@@ -65,6 +65,34 @@ export default function Catalog({
                     Armaduras
                 </button>
             </nav>
+
+            {/* Controles para buscar y ordenar elementos */}
+            <div className="filters">
+                {/* Campo de busqueda controlado por React*/}
+                <label className="field field-grow">
+                    <span>Buscar</span>
+                    <input
+                        type="search"
+                        placeholder="Nombre del objeto..."
+                        // Conecta el valor del input con el estado de busqueda
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </label>
+
+                {/* Desplegable de seleccion para ordenar*/}
+                <label className="field">
+                    <span>Ordenar</span>
+                    {/* Conecta la opcion seleccoinada con el estado de orden*/}
+                    <select value={orden} onChange={(e) => setOrden(e.target.value)}>
+                        {/* Tipos de orden */}
+                        <option value="name">Nombre</option>
+                        <option value="weight-asc">Menor peso</option>
+                        <option value="weight-desc">Mayor peso</option>
+
+                    </select>
+                </label>
+            </div>
         </section>
     )
 }
