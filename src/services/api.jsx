@@ -13,10 +13,10 @@ function cacheValida(cache){
 }
 
 export async function obtenerLista(categoria){
-    const cacheKey = '${CACHE_PREFIX}${categoria}';
+    const cacheKey = `${CACHE_PREFIX}${categoria}`;
 
 
-    {/* Intentamos en la cache */}
+    /* Intentamos en la cache */
     try{
         const raw = localStorage.getItem(cacheKey);
         if (raw){
@@ -28,14 +28,14 @@ export async function obtenerLista(categoria){
             console.warn('error al leer cache: ', error);
     }
 
-    {/* Si no hay cache valida se lo pedimos a la API*/}
+    /* Si no hay cache valida se lo pedimos a la API*/
 
-    {/* 
+    /* 
         todos: todos los datos
         limit: cuantos objetos pillamos de una tirada
         page: la pagina actual de la api
         hasMore: booleano para saber si tenemos que avanzar a la siguiente pagina de datos
-        */}
+        */
     const todos = [];
     const limit = 100;
     let page = 0;
@@ -43,7 +43,7 @@ export async function obtenerLista(categoria){
 
     while(hasMore) {
         const response = await fetch(
-            {/* encodeURIComponent se asegura que el string tenga un formato correcto */}
+            /* encodeURIComponent se asegura que el string tenga un formato correcto */
             `${API_URL}/${encodeURIComponent(categoria)}?limit=${limit}&page=${page}`
         );
 
@@ -62,7 +62,7 @@ export async function obtenerLista(categoria){
         page +=1;
     }
 
-    {/* Guardamos los datos en la cache con la llave creada anteriormente */}
+    /* Guardamos los datos en la cache con la llave creada anteriormente */
     try{
         localStorage.setItem(
             cacheKey,

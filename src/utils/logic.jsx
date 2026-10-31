@@ -1,17 +1,17 @@
 
-{/* convierte el valor de entrada a un numero seguro o null */}
+/* convierte el valor de entrada a un numero seguro o null */
 export function convertirNumero(valor){
     if(valor === null || valor === undefined || valor === '')
         return null;
     const numero = Number(valor);
-    {/* si el numero es valido, devuelve el numero, sino, devuelve null */}
+    /* si el numero es valido, devuelve el numero, sino, devuelve null */
     return Number.isFinite(numero) ? numero : null;
 }
 
-{/* limpia los stats que devolvio la API */}
+/* limpia los stats que devolvio la API */
 function normalizarStats(stats){
 
-    {/* comprobamos que stats es un array, si no es un array, devuelve un array vacio */}
+    /* comprobamos que stats es un array, si no es un array, devuelve un array vacio */
     if(!Array.isArray(stats))
         return [];
     return stats
@@ -32,10 +32,10 @@ export function normalizarObjetos(datos){
         .map(item => ({
             id: item.id ?? item.name,
             nombre: typeof item.name === 'string' ? item.name.trim() : '',
-            image: typeof item.image === 'string' ? item.image : '',
-            description: typeof item.description === 'string' ? item.description : 'sin descripcion',
+            imagen: typeof item.image === 'string' ? item.image : '',
+            descripcion: typeof item.description === 'string' ? item.description : 'sin descripcion',
             peso: convertirNumero(item.weight),
-            categoria: typeof item.category === 'string' ? item.categoria : 'sin categoria',
+            categoria: typeof item.category === 'string' ? item.category : 'sin categoria',
             ataque: normalizarStats(item.attack),
             negacionDanio: normalizarStats(item.dmgNegation),
             resistencia: normalizarStats(item.resistance),
@@ -46,31 +46,31 @@ export function normalizarObjetos(datos){
 }
 
 export function filtrarObjetos(objetos, busqueda = ''){
-    {/* nos aseguramos de lo que haya escrito el usuario este en minuscula y sin espacios adicionales */}
+    /* nos aseguramos de lo que haya escrito el usuario este en minuscula y sin espacios adicionales */
     const query =  String(busqueda).trim().toLocaleLowerCase('es');
 
     if(!query)
         return objetos;
 
-    {/* devolvemos los objetos que incluyan la query del usuario */}
-    return objetos.filter(item =
+    /* devolvemos los objetos que incluyan la query del usuario */
+    return objetos.filter(item =>
         item.nombre.toLocaleLowerCase('es').includes(query)
     );
 }
 
-{/* Ordenar por nombre o peso, por default vamos por orden alfabetico */}
+/* Ordenar por nombre o peso, por default vamos por orden alfabetico */
 export function ordenarObjetos(objetos, orden ='name'){
     return [...objetos].sort((a, b) => {
         if(orden === 'weight-asc')
             return (a.peso ?? Infinity) - (b.peso ?? Infinity);
         if(orden === 'weight-desc')
             return (b.peso ?? -Infinity) - (a.peso ?? -Infinity);
-        return a.nombre.localeCompared(b.nombre, 'es');
+        return a.nombre.localeCompare(b.nombre, 'es');
 
     });
 }
 
-{/* calculamos el peso total y suma las estadisticas de las piezas equipadas */}
+/* calculamos el peso total y suma las estadisticas de las piezas equipadas */
 export function resumirEquipamiento(equipamiento){
     const piezas = Object.values(equipamiento).filter(Boolean);
     const peso = piezas.reduce ((sum, item) => sum + (convertirNumero(item.peso) ?? 0), 0);
