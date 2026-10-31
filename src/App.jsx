@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { obtenerLista } from './services/api.jsx';
 import { normalizarObjetos } from './utils/logic.jsx';
-import Catalog from './components/Catalog.jsx';
-import Builder from './components/Builder.jsx';
+import Catalog from './componentes/Catalog.jsx';
+import Builder from './componentes/Builder.jsx';
 
 const DEFAULT_ATTRIBUTES = {Str: 10, Dex: 10, Int: 10, Fai: 10, Arc: 10}
 function App() {
@@ -90,9 +90,28 @@ function App() {
         </header>
         <main>
           {/* Pasa la lista filtrada de la categoria actual y las funciones del catalogo */}
+          <Catalog
+            categoriaActual={categoriaActual}
+            setCategoriaActual={setCategoriaActual}
+            lista={catalogo[categoriaActual]}
+            loading={loading}
+            error={error}
+            onEquipar={equiparObjeto}
+          />
+
+          {/* Pasa el estado del personaje y la funcion de desequipar al Builder*/}
+          <Builder
+            build={build}
+            setBuild={setBuild}
+            onDesequipar={desequiparObjeto}
+          />
         </main>
+
+        <footer>
+          <p>Fan project no oficial. Elden Ring y sus recursos pertenecen a sus respectivos propietarios</p>
+        </footer>
       </div>
-  )
+  );
 }
 
 export default App
