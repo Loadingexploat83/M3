@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { obtenerLista } from './services/api.jsx';
 import { normalizarObjetos } from './utils/logic.jsx';
-import Catalog from './componentes/Catalog.jsx';
+import Catalog from './componentes/Catalogo.jsx';
 import Builder from './componentes/Builder.jsx';
 
 const DEFAULT_ATTRIBUTES = {Str: 10, Dex: 10, Int: 10, Fai: 10, Arc: 10}

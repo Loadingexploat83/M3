@@ -93,6 +93,64 @@ export default function Catalog({
                     </select>
                 </label>
             </div>
+
+            {/* Mensaje de carga*/}
+            {loading && (
+                <p className="status status-loading">Cargando catalogo desde la API...</p>
+            )}
+
+            {/* Mensaje de error*/}
+            {error && (
+                <p className="status status-warning">
+                    Error de carga: {error}
+                </p>
+            )}
+
+            {/* Grid en el que se cargan las tarjetas*/}
+            <div className="catalog-grid">
+                {!loading && !error && listaProcesada.length === 0 && (
+                    <p className="empty-state">No se encontraron objetos que coincidan.</p>
+                )}
+
+                {listaProcesada.map((item) => (
+                    <article className="item-card" key={item.id}>
+                        {item.imagen && (
+                            <img
+                                className="item-image"
+                                src={item.imagen}
+                                alt={item.nombre}
+                                loading='lazy' // carga diferida de imagenes para mejorar rendimiento
+
+                                //manejo de errores:
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        )}
+
+                        {/* cuerpo de la tarjeta */}
+                        <div className="item-card-body">
+                            <p className="item-kind">
+                                {categoriaActual === 'weapons' ? 'ARMA' : 'ARMADURA'}
+                            </p>
+                            <h3>{item.nombre}</h3>
+                            <p className="item-description">{item.description}</p>
+                            <p className="item-weight">
+                                Peso: {item.peso ?? 'No disponible'}
+                            </p>
+
+                            {/* boton para equipar el objeto*/}
+                            <button
+                                type="button"
+                                className="button button-primary"
+                                onClick={() => onEquipar(item)}
+                            >
+                                Equipar
+                            </button>
+                        </div>
+                    </article>
+                ))}
+            </div>
         </section>
-    )
+    );
 }
