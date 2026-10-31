@@ -108,6 +108,65 @@ export default function Builder({build, setBuild, onDesequipar}) {
             </section>
 
             {/* Panel 2: Atributos numericos del pesonaje */}
+            <section className="panel">
+                <div className="section-heading">
+                    <div>
+                        <p className="eyebrow"> ATRIBUTOS DEL PERSONAJE</p>
+                        <h2> Requisitos del arma</h2>
+                    </div>
+                </div>
+            
+            {/* Generacion dinamica de los 5 inputs de atributos */}
+            <div className="attributes-grid">
+                {ATTRIBUTES.map(([key, label]) => (
+                    <label key={key} className="field attribute-field">
+                        <span>{label}</span>
+                        <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            value ={build.atributos[key]}
+                            onChange={(e) => handleAttributeChange(key, e.target.value)}
+                            />
+                    </label>
+                ))}
+            </div>
+
+            {/* Mensaje condicional sore el cumplimiento de requisitos de arma*/}
+            {!build.equipamiento.arma ? (
+                <p className="status"> Equipa un arma para comprobar sus requisitos</p>
+            ) : requisitos.valido ? (
+                <p className="status status-success">Cumples los requisitos de atributos del arma</p>
+            ) : (
+                <p className="status status-warning">
+                    Te faltan atributos: {requisitos.faltantes.map(f => `${f.nombre} ${f.actual}/${f.requerido}`).join(', ')}.
+                </p>
+            )}
+
+            </section>
         </aside>
-    )
+    );
+}
+
+// Sub-componente dinámico para pintar la lista de estadísticas (clave -> valor)
+function GroupStats({ titulo, stats }) {
+  const entries = Object.entries(stats);
+
+  return (
+    <div className="combined-group">
+      <h3>{titulo}</h3>
+      {entries.length === 0 ? (
+        <p className="muted">Sin estadísticas disponibles.</p>
+      ) : (
+        <dl className="stats-list">
+          {entries.map(([name, amount]) => (
+            <div key={name} style={{ display: 'contents' }}>
+              <dt>{name}</dt>
+              <dd>{amount.toFixed(1)}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  );
 }
