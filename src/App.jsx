@@ -22,7 +22,7 @@ function App() {
 
 
   const handleNombreChange = (nuevoNombre) => {
-    setBuild(prev => ({ ...prev, nuevoNombre }));
+    setBuild(prev => ({ ...prev, nombre: nuevoNombre }));
   };
 
   const handleAtributoChange = (key, rawValue) => {
@@ -33,14 +33,14 @@ function App() {
   const handleEquipar = (item) => {
     setBuild(prev => {
       if (item.tipo === 'weapons') {
-        return { ...prev, equipamiento: { ...prev.equipamiento, weapon: item } };
+        return { ...prev, equipamiento: { ...prev.equipamiento, arma: item } };
       }
 
       const cat = (item.categoria || '').toLowerCase();
       let slot = 'chest';
       if (cat.includes('head') || cat.includes('helm')) slot = 'head';
       else if (cat.includes('leg') || cat.includes('pants')) slot = 'legs';
-      else if (cat.includes('gauntle') || cat.includes('glove')) slot = 'arms';
+      else if (cat.includes('gauntlet') || cat.includes('glove')) slot = 'arms';
       return {
         ...prev,
         equipamiento: { ...prev.equipamiento, [slot]: item }
@@ -79,6 +79,7 @@ function App() {
             onNombreChange={handleNombreChange}
             onAtributoChange={handleAtributoChange}
             onDesequipar={handleDesequipar}
+            onCargarBuild={setBuild}
           />
         </main>
 

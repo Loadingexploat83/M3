@@ -1,5 +1,5 @@
-import { resumirEquipamiento, comprobarRequisitos } from "../utils/logic";
-import SavedBuilds from "./SavedBuilds";
+import { resumirEquipamiento, comprobarRequisitos } from "../utils/logic.jsx";
+import SavedBuilds from "./SavedBuilds.jsx";
 
 const SLOTS_CONFIG = [
   { id: 'arma', label: 'Arma' },
@@ -44,7 +44,6 @@ function AttributeField({attrKey, label, value, onAtributoChange}) {
     return (
         <label className="field attribute-field">
             <span>{label}</span>
-            z
             <input
                 type="number"
                 min="1"
@@ -77,7 +76,7 @@ export default function Builder({build, onNombreChange, onAtributoChange, onDese
     return (
         <aside className="builder-column">
             {/* panel de config y equipamiento */}
-            <section className = "panel">
+            <section className="panel">
                 <div className="section-heading">
                     <div>
                         <p className="eyebrow"> CONFIGURACIÓN</p>
@@ -116,7 +115,6 @@ export default function Builder({build, onNombreChange, onAtributoChange, onDese
                     <div className="stat-tile">
                         <span>Peso equipado</span>
                         <strong>{resumen.peso.toFixed(1)}</strong>
-                        <strong>{resumen.piezas} / 5</strong>
                     </div>
                     <div className="stat-tile">
                         <span>Piezas equipadas</span>

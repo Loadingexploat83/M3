@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { filtrarObjetos, ordenarObjetos } from "../utils/logic";
+import { filtrarObjetos, ordenarObjetos } from "../utils/logic.jsx";
 
 /*
     definimos y exportamos por defecto el componente funcional'Catalog'
@@ -40,7 +40,7 @@ import { filtrarObjetos, ordenarObjetos } from "../utils/logic";
                 <div className="item-card-body">
                     <p className="item-kind">{tipo === 'weapons' ? 'ARMA' : 'ARMADURA'}</p>
                     <h3>{item.nombre}</h3>
-                    <p className="item-description">{item.description}</p>
+                    <p className="item-description">{item.descripcion}</p>
                     <p className="item-weight">Peso: {item.peso ?? 'No disponible'}</p>
 
                     <button
@@ -58,7 +58,7 @@ import { filtrarObjetos, ordenarObjetos } from "../utils/logic";
 export default function Catalog({
     categoriaActual,
     setCategoriaActual,
-    lista,
+    lista = [],
     loading,
     error,
     onEquipar
