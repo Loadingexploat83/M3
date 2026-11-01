@@ -13,6 +13,48 @@ import { filtrarObjetos, ordenarObjetos } from "../utils/logic";
         onEquipar: funcion callback que se ejecuta al hacer click en 'equipar'
  */
 
+    function TabButton({label, active, onClick}) {
+        return (
+            <button
+                type="button"
+                className={`tab ${active ? 'active' : ''}`}
+                onClick={onClick}
+                >{label}</button>
+        );
+    }
+
+    function ItemCard({item, tipo, onEquipar}) {
+        const [imgError, setImgError] = useState(false);
+        return (
+            <article className="item-card">
+                {item.imagen && !imgError && (
+                    <img
+                        className="item-image"
+                        src={item.imagen}
+                        alt={item.nombre}
+                        loading='lazy' // carga diferida de imagenes para mejorar rendimiento
+                        onError={() => setImgError(true)} // si hay error de carga, ocultamos la imagen
+                    />
+                )}
+
+                <div className="item-card-body">
+                    <p className="item-kind">{tipo === 'weapons' ? 'ARMA' : 'ARMADURA'}</p>
+                    <h3>{item.nombre}</h3>
+                    <p className="item-description">{item.description}</p>
+                    <p className="item-weight">Peso: {item.peso ?? 'No disponible'}</p>
+
+                    <button
+                        type="button"
+                        className="button button-primary"
+                        onClick={() => onEquipar(item)}
+                    >
+                        Equipar
+                    </button>
+                </div>
+            </article>
+        );
+    }
+
 export default function Catalog({
     categoriaActual,
     setCategoriaActual,
@@ -49,21 +91,16 @@ export default function Catalog({
 
             {/* barra de navegacion para cambiar entre armas y armaduras*/}
             <nav className="tabs" aria-label="Categorías de objetos">
-                <button
-                    type="button"
-                    /* Aplicamos clase active si la categoria actual es weapons*/
-                    className={`tab ${categoriaActual === 'weapons' ? 'active' : ''}`}
+                <TabButton
+                    label="Armas"
+                    active={categoriaActual === 'weapons'}
                     onClick={() => setCategoriaActual('weapons')}
-                >
-                    Armas
-                </button>
-                <button
-                    type="button"
-                    className={`tab ${categoriaActual === 'armors' ?'active' : ''}`}
+                />
+                <TabButton
+                    label="Armaduras"
+                    active={categoriaActual === 'armors'}
                     onClick={() => setCategoriaActual('armors')}
-                >
-                    Armaduras
-                </button>
+                />
             </nav>
 
             {/* Controles para buscar y ordenar elementos */}
@@ -113,42 +150,12 @@ export default function Catalog({
                 )}
 
                 {listaProcesada.map((item) => (
-                    <article className="item-card" key={item.id}>
-                        {item.imagen && (
-                            <img
-                                className="item-image"
-                                src={item.imagen}
-                                alt={item.nombre}
-                                loading='lazy' // carga diferida de imagenes para mejorar rendimiento
-
-                                //manejo de errores:
-                                onError={(e) => {
-                                    e.target.style.display = 'none';
-                                }}
-                            />
-                        )}
-
-                        {/* cuerpo de la tarjeta */}
-                        <div className="item-card-body">
-                            <p className="item-kind">
-                                {categoriaActual === 'weapons' ? 'ARMA' : 'ARMADURA'}
-                            </p>
-                            <h3>{item.nombre}</h3>
-                            <p className="item-description">{item.description}</p>
-                            <p className="item-weight">
-                                Peso: {item.peso ?? 'No disponible'}
-                            </p>
-
-                            {/* boton para equipar el objeto*/}
-                            <button
-                                type="button"
-                                className="button button-primary"
-                                onClick={() => onEquipar(item)}
-                            >
-                                Equipar
-                            </button>
-                        </div>
-                    </article>
+                    <ItemCard
+                        key={item.id}
+                        item={item}
+                        tipo={categoriaActual}
+                        onEquipar={onEquipar}
+                    />
                 ))}
             </div>
         </section>

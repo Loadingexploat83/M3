@@ -3,7 +3,8 @@ import { normalizarObjetos } from '../utils/logic';
 
 const STORAGE_KEY = 'eldenring-saved-builds-v1';
 
-export default function SavedBuilds({build, setBuild}){
+export default function SavedBuilds({build, onCargarBuild}) {
+
     const [savedBuilds, setSavedBuilds] = useState([]);
     const [saveState, setSaveState] = useState('');
    
@@ -51,6 +52,14 @@ export default function SavedBuilds({build, setBuild}){
 
     };
 
+    const handleLoad = (item) => {
+    onCargarBuild({
+      nombre: item.nombre || '',
+      equipamiento: item.equipamiento || { arma: null, head: null, chest: null, arms: null, legs: null },
+      atributos: item.atributos || { Str: 10, Dex: 10, Int: 10, Fai: 10, Arc: 10 }
+    });
+  }
+
 
     const handleDelete = (id) =>{
         const filtradas = savedBuilds.filter(b => b.id !== id);
@@ -95,7 +104,7 @@ export default function SavedBuilds({build, setBuild}){
                 throw new Error('El archivo JSON no tiene una estructura build valida');
             }
 
-            setBuild({
+            onCargarBuild({
                 nombre: incoming.nombre || 'Build importada',
                 equipamiento: incoming.equipamiento,
                 atributos: incoming.atributos || {

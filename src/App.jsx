@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
-import { obtenerLista } from './services/api.jsx';
-import { normalizarObjetos } from './utils/logic.jsx';
-import Catalog from './componentes/Catalogo.jsx';
+import { useState } from 'react';
+import { useCatalog } from './hooks/useCatalog.jsx';
 import Builder from './componentes/Builder.jsx';
+import Catalog from './componentes/Catalogo.jsx';
 
 const DEFAULT_ATTRIBUTES = {Str: 10, Dex: 10, Int: 10, Fai: 10, Arc: 10}
 function App() {
@@ -10,14 +9,9 @@ function App() {
   /* la pestaña que tienes seleccionada */
   const [categoriaActual, setCategoriaActual] = useState('weapons');
 
-  /* donde guardamos los objetos para no pedirle varias veces a la API */
-  const [catalogo, setCatalogo] = useState({weapons: [], armors: []});
-
-
   /* ou shii soy yo */
   /* control de carga y errores */
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+    const {lista, loading, error} = useCatalog(categoriaActual);
 
   /* La build del usuario */
   const [build, setBuild] = useState({
@@ -27,60 +21,40 @@ function App() {
   });
 
 
-  /* useEffect: cuando cambiamos la categoria actual */
-  useEffect(() => {
-    if(catalogo[categoriaActual].length > 0) return;
+  const handleNombreChange = (nuevoNombre) => {
+    setBuild(prev => ({ ...prev, nuevoNombre }));
+  };
 
-    async function cargarDatos(){
-      setLoading(true);
-      setError(null); // limpiamos errores anteriores
+  const handleAtributoChange = (key, rawValue) => {
+    const value = Math.min(99, Math.max(1, Math.trunc(Number(rawValue) || 1))); // aseguramos que sea un número entre 1 y 99
+    setBuild(prev => ({ ...prev, atributos: { ...prev.atributos, [key]: value } }));
+  };
 
-      try{
-        //pedimos los datos de API.jsxx
-        const datos = await obtenerLista(categoriaActual);
-
-        /* Limpiamos los datos con normalizarObjetos */
-        const limpios = normalizarObjetos(datos)
-          .filter(item => item.tipo === categoriaActual);
-        
-        // guardamos la lista en el estado manteniendo la otra categoria intacta
-        setCatalogo(prev => ({ ...prev, [categoriaActual]: limpios}));
-      } catch (err){
-        setError(err.message);
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    cargarDatos();
-  }, [categoriaActual]); // se ejecuta cada vez que cambia 'categoriaActual'
-
-  const equiparObjeto = (item) => {
+  const handleEquipar = (item) => {
     setBuild(prev => {
-      // si es un arma, va a la ranura de arma
-      if (item.tipo === 'weapons' || categoriaActual === 'weapons'){
-        return {...prev, equipamiento: { ...prev.equipamiento, arma: item}};
+      if (item.tipo === 'weapons') {
+        return { ...prev, equipamiento: { ...prev.equipamiento, weapon: item } };
       }
 
-      // si es una armadura, analizamos su categoria para detectar su sitio
       const cat = (item.categoria || '').toLowerCase();
-      let slot = 'chest'; // por defecto es el pecho
+      let slot = 'chest';
       if (cat.includes('head') || cat.includes('helm')) slot = 'head';
-      else if (cat.includes('leg') || cat.includes ('pants')) slot = 'legs';
-      else if (cat.includes('gauntlet') || cat.includes('glove')) slot = 'arms';
-
+      else if (cat.includes('leg') || cat.includes('pants')) slot = 'legs';
+      else if (cat.includes('gauntle') || cat.includes('glove')) slot = 'arms';
       return {
-        ...prev, equipamiento: {...prev.equipamiento, [slot]: item}
+        ...prev,
+        equipamiento: { ...prev.equipamiento, [slot]: item }
       };
     });
   };
 
-  const desequiparObjeto = (slot) => {
+  const handleDesequipar = (slot) => {
     setBuild(prev => ({
-      ...prev, 
-      equipamiento: { ...prev.equipamiento, [slot]: null} // pasamos la ranura especifica a null
-    }))
-  }
+      ...prev,
+      equipamiento: { ...prev.equipamiento, [slot]: null }
+    }));
+  };
+  
   return (
       <div id="app">
         <header className='site-header'>
@@ -93,17 +67,18 @@ function App() {
           <Catalog
             categoriaActual={categoriaActual}
             setCategoriaActual={setCategoriaActual}
-            lista={catalogo[categoriaActual]}
+            lista={lista}
             loading={loading}
             error={error}
-            onEquipar={equiparObjeto}
+            onEquipar={handleEquipar}
           />
 
           {/* Pasa el estado del personaje y la funcion de desequipar al Builder*/}
           <Builder
             build={build}
-            setBuild={setBuild}
-            onDesequipar={desequiparObjeto}
+            onNombreChange={handleNombreChange}
+            onAtributoChange={handleAtributoChange}
+            onDesequipar={handleDesequipar}
           />
         </main>
 
